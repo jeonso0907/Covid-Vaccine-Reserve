@@ -5,7 +5,7 @@
 </head>
 <body>
 	<?php
-		$con = new mysqli('localhost','root','mysql','mydb');
+		$con = new mysqli('localhost','root','mysql','bur');
 		if (!$con) {die('Cannot connect' .mysqli_connect_error());}
 
 		$patient_iD = null;
@@ -31,27 +31,37 @@
 			if (isset($patient['Fname'])) {
 				echo "<h3> Patient Information </h3> <br>";
 				echo "Name				:	" . $patient['Fname'] . " " . $patient['Lname'] . "<br>";
+				echo "Patient ID		:	" . $patient_iD . "<br>";
 				echo "Age				:	" . $patient['Age'] . "<br>";
 				echo "Earlist Date		:	" . $patient['Edate'] . "<br>";
-				echo "Priority			:	3<br><br>";
+				echo "Priority			:	" . $patient['Priority'] . "<br><br>";
 			}
 
-			$get_doseinfo = "select * from doses inner join appointments on (doses.batchid = appointments.batchid and appointments.patientid = '" . $patient_iD . "')";
+			$get_doseinfo = "select * from doses right join appointments on (doses.doseid = appointments.doseid) where appointments.patientid = '" . $patient_iD . "'";
 			$dose_info = mysqli_query($con, $get_doseinfo);
 			$dose = $dose_info->fetch_array();
 
-			if (isset($dose['DoseNum'])) {
+			if (isset($dose['DoseID'])) {
 				echo "<h3> Dose Information </h3> <br>";
-				echo "Dose ID			:	" . $dose['DoseNum'] . "<br>";
-				echo "Batch ID			:	" . $dose['batchid'] . "<br>";
-				echo "Brand				:	" . $dose['manufacture'] . "<br>";
+				echo "Dose ID			:	" . $dose['DoseID'] . "<br>";
+				echo "Batch ID			:	" . $dose['BatchID'] . "<br>";
+				echo "Brand				:	" . $dose['Manufacture'] . "<br>";
 				echo "Expiration Date	:	" . $dose['ExpDate'] . "<br>";
-				echo "Status			:	" . $dose['status'] . "<br>";
 			} else {
 				echo "<h3> Waitlisted </h3> <br>";
 			}
 		}
+		setcookie("patientID", $patient_iD, time() + 60 * 1);
 	?>
+
+	<form method = "post" action = "signup.php">
+		<input type = "submit" value = "signout"><br/>
+	</form>
+
+	<form method = "post" action = "cancel.php">
+		<input type = "submit" value = "cancel"><br/>
+	</form>
+
 
 </body>
 </html>

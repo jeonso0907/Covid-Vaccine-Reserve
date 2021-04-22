@@ -6,7 +6,7 @@
 <body>
 
 	<?php
-		$con = new mysqli('localhost','root','mysql','mydb');
+		$con = new mysqli('localhost','root','mysql','bur');
 		if (!$con) {die('Cannot connect' .mysqli_connect_error());}
 
 		// Generate the patient's id by the count of the current same last names
@@ -20,7 +20,8 @@
 		}
 
 		$insert = "INSERT INTO patient (PatientID, Fname, Lname, Phone, Age, Priority, Edate)"
-			. " VALUES ('" . $patient_id . "', '" .$_POST['fname']. "','" .$_POST['lname'] ."'," .$_POST['number']. "," .$_POST['age']. ", 3, '" .$_POST['edate']. "')";
+			. " VALUES ('" . $patient_id . "', '" .$_POST['fname']. "','" .$_POST['lname'] ."'," .$_POST['number']. "," .$_POST['age']. ", " 
+			. $_POST['priority'] . ", '" .$_POST['edate']. "')";
 		$result = mysqli_query($con, $insert);
 		if ($result) {
 			echo "Sign up successed <br>";
@@ -29,20 +30,20 @@
 		}
 
 		// Check the available dose and display the result (waitlist or appointment)
-		$dose = mysqli_query($con, "select BatchID, DoseNum, count(DoseNum), manufacture, expdate, status from doses where status = 'valid' and ExpDate >= '" . $_POST['edate'] 
+		$dose = mysqli_query($con, "select BatchID, DoseID, count(DoseID), manufacture, expdate, status from doses where status = 'valid' and ExpDate >= '" . $_POST['edate'] 
 								. "' order by expdate");
 		$available_dose = $dose->fetch_array();
 
 		$result = "";
 		if ($available_dose[2] > 0) {
 			echo "Appointment reserved <br>";
-			$result = "insert into appointments (PatientID, BatchID, Date, DoseNum) values ('" . $patient_id . "', '" . $available_dose[0] . "', '" . $_POST['edate'] . "', " 
-				. $available_dose[1] . ")";
-			$update = "update doses set status = 'used' where dosenum =" . $available_dose[1];
+			$result = "insert into appointments (PatientID, AptResult, BatchID, DoseID, Date) values ('" . $patient_id . "', 'reserved', " . $available_dose[0]
+						. ", " . $available_dose[1] . ", '" . $_POST['edate'] . "')";
+			$update = "update doses set status = 'used' where doseID =" . $available_dose[1];
 			mysqli_query($con, $update);
 		} else {
 			echo "Watilisted <br>";
-			$result = "insert into waitlist (PatientID, Waitnum) values ('" . $patient_id . "', 3)";
+			$result = "insert into appointments (PatientID, AptResult) values ('" . $patient_id . "', 'waitlist')";
 		}
 		$ap_result = mysqli_query($con, $result);
 
