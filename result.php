@@ -47,11 +47,13 @@
 				echo "Batch ID			:	" . $dose['BatchID'] . "<br>";
 				echo "Brand				:	" . $dose['Manufacture'] . "<br>";
 				echo "Expiration Date	:	" . $dose['ExpDate'] . "<br>";
-			} else {
+			} else if (isset($dose['AptResult'])) {
 				echo "<h3> Waitlisted </h3> <br>";
+			} else {
+				echo "<h3> No Appointment </h3> <br>";
 			}
 		}
-		setcookie("patientID", $patient_iD, time() + 60 * 1);
+		setcookie("patientID", $patient_iD, time() + 60 * 10);
 	?>
 
 	<form method = "post" action = "signup.php">

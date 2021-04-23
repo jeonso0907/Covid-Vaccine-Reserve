@@ -18,7 +18,7 @@
 			$cancel = "delete from appointments where patientid = '" . $patient_id . "'";
 			mysqli_query($con, $cancel);
 			if (isset($apt['DoseID'])) {
-				$restore_dose = "update doses set status = 'valid' where doseid = " . $apt['DoseID'];
+				$restore_dose = "update doses set status = 'valid' where doseid = '" . $apt['DoseID'] . "'";
 				mysqli_query($con, $restore_dose);
 			}
 			echo "Appointment canceled";

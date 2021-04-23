@@ -29,6 +29,10 @@
 			echo "Sign up failed <br>";
 		}
 
+		// Update any expired dose before assign it to patient
+		date_default_timezone_set("America/New_York");
+		$update_exp = mysqli_query($con, "update doses set status = 'Expired' where ExpDate < '" . date("Y-m-d") . "'");
+
 		// Check the available dose and display the result (waitlist or appointment)
 		$dose = mysqli_query($con, "select BatchID, DoseID, count(DoseID), manufacture, expdate, status from doses where status = 'valid' and ExpDate >= '" . $_POST['edate'] 
 								. "' order by expdate");
@@ -38,8 +42,8 @@
 		if ($available_dose[2] > 0) {
 			echo "Appointment reserved <br>";
 			$result = "insert into appointments (PatientID, AptResult, BatchID, DoseID, Date) values ('" . $patient_id . "', 'reserved', " . $available_dose[0]
-						. ", " . $available_dose[1] . ", '" . $_POST['edate'] . "')";
-			$update = "update doses set status = 'used' where doseID =" . $available_dose[1];
+						. ", '" . $available_dose[1] . "', '" . $_POST['edate'] . "')";
+			$update = "update doses set status = 'used' where DoseID = '" . $available_dose[1] . "'";
 			mysqli_query($con, $update);
 		} else {
 			echo "Watilisted <br>";

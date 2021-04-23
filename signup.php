@@ -15,7 +15,7 @@
 		<input type = "submit" value = "Signup"></br>
 	</form>
 
-	<form method = "POST" action = "dose.php">
+	<form method = "get" action = "dose.php">
 		<input type = "submit" value = "Dose Edit"></br>
 	</form>
 </body>
