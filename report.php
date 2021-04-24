@@ -10,7 +10,7 @@
 </style>
 <body>
 	<!-- <h2>Patient Report: <?php //echo date("Y-m-d") ?></h2> -->
-	<h2>Patient Repost: 2021-4-20</h2>
+	<h2>Patient Report: 2021-4-20</h2>
 	<?php
 		$con = new mysqli('localhost','root','mysql','bur');
 		if (!$con) {die('Cannot connect' .mysqli_connect_error());}

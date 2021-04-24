@@ -26,7 +26,7 @@
 		if ($result) {
 			echo "Sign up successed <br>";
 		} else {
-			echo "Sign up failed <br>";
+			echo "Sign up failed: Same phone already exists with this name. Please try with other phone number or name <br>";
 		}
 
 		// Check the available dose and display the result (waitlist or appointment)

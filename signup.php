@@ -21,8 +21,13 @@
 		<input type = "submit" value = "Dose Edit"></br>
 	</form>
 
+	<form method = "get" action = "dose_report.php">
+		<input type = "submit" value = "Dose Report"></br>
+	</form>
+
 	<form method = "get" action = "report.php">
 		<input type = "submit" value = "Patient Report"></br>
 	</form>
+
 </body>
 </html>

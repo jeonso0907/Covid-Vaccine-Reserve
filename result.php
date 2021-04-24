@@ -9,10 +9,11 @@
 		if (!$con) {die('Cannot connect' .mysqli_connect_error());}
 
 		$patient_iD = null;
+		$valid_signin = true;
 
 		if (!isset($_POST['patientid'])) {
 			$patient_iD = $_COOKIE['patientID'];
-		} else {
+		} else if (isset($_POST['patientid'])) {
 			$patient_iD = $_POST['patientid'];
 			$patient_fname = $_POST['fname'];
 			$valid_patient = mysqli_query($con, "select patientid from patient where patientid = '". $patient_iD . "' and fname = '" . $patient_fname . "'");
@@ -21,7 +22,7 @@
 			}
 		}
 
-		if (!isset($_POST['patientid']) || $valid_patient->num_rows != 0) {
+		if ($valid_signin && (!isset($_POST['patientid']) || $valid_patient->num_rows != 0)) {
 		
 			$get_patientinfo = "select * from patient where patientid = '" . $patient_iD . "'";
 
@@ -60,9 +61,13 @@
 		<input type = "submit" value = "signout"><br/>
 	</form>
 
-	<form method = "post" action = "cancel.php">
-		<input type = "submit" value = "cancel"><br/>
-	</form>
+	<?php 
+		if ($valid_signin) {
+			echo "<form method = 'post' action = 'cancel.php'>";
+			echo "<input type = 'submit' value = 'cancel'><br/>";
+			echo "</form>";
+		}
+	?>
 
 
 </body>

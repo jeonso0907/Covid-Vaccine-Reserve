@@ -2,6 +2,7 @@
 <html>
 <head>
 	<title>Dose Control</title>
+
 </head>
 <style>
 	table, th, td {
@@ -26,7 +27,7 @@
 			$is_updated = false;
 			if ($get_waitlist) {
 				while ($waitlist = $get_waitlist->fetch_array()) {
-					if ($waitlist['Edate'] <= $_POST['ExpDate']) {
+					if ($waitlist['Edate'] <= $_POST['ExpDate'] && $_POST['ExpDate'] >= '2021-04-20') {
 						mysqli_query($con, "update appointments set AptResult = 'reserved', BatchID = 1, DoseID = '" . $dose_id . "', Date = '" . $waitlist['Edate'] 
 									. "' where patientID = '" . $waitlist['PatientID'] . "'");
 						echo "Updated a wailisted patient with ID: " . $waitlist['PatientID'];
@@ -38,6 +39,7 @@
 
 			$status = 'valid';
 			if ($is_updated) $status = 'used';
+			if ($_POST['ExpDate'] < '2021-04-20') $status = 'expired';
 			mysqli_query($con, "insert into doses (BatchID, DoseID, Manufacture, ExpDate, Status) values (1,  '" . $dose_id . "', '" . $_POST['dose'] . "', '" 
 							. $_POST['ExpDate'] . "', '" . $status . "')");
 			
@@ -85,9 +87,9 @@
 					}
 					echo "</table>";
 					echo "Total Dose Recevied: " . $total_dose . "<br>";
-					echo "Dose Distributed: " . $dose_used . "<br>";
-					echo "Dose Available: " . $dose_valid . "<br>";
-					echo "Dose Expired: " . $dose_exp . "<br>";
+					echo "Dose Distributed:    " . $dose_used . "<br>";
+					echo "Dose Available:      " . $dose_valid . "<br>";
+					echo "Dose Expired:        " . $dose_exp . "<br>";
 				}
 			}
 		}
