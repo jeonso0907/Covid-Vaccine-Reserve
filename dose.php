@@ -19,7 +19,7 @@
 
 			$curr_dose = mysqli_query($con, "select count(Manufacture) from doses where Manufacture = '" . $_POST['dose'] . "'");
 			$dose_count = $curr_dose->fetch_array();
-			$dose_id = $_POST['dose'][0] . "." . ($dose_count[0] + 1);
+			$dose_id = $_POST['DoseID'];
 
 			$get_waitlist = mysqli_query($con, "select appointments.PatientID, age, Priority, Edate from appointments left join patient on "
 											. "(appointments.patientid = patient.patientid) where AptResult = 'waitlist' order by priority ASC, age DESC");
@@ -29,23 +29,17 @@
 					if ($waitlist['Edate'] <= $_POST['ExpDate']) {
 						mysqli_query($con, "update appointments set AptResult = 'reserved', BatchID = 1, DoseID = '" . $dose_id . "', Date = '" . $waitlist['Edate'] 
 									. "' where patientID = '" . $waitlist['PatientID'] . "'");
-						echo "Updated a wailisted patient";
+						echo "Updated a wailisted patient with ID: " . $waitlist['PatientID'];
 						$is_updated = true;
 						break;
 					}
 				}
 			}
 
-			if (date("Y-m-d") <= $_POST['ExpDate']) {
-				$status = 'valid';
-				if ($is_updated) $status = 'used';
-				mysqli_query($con, "insert into doses (BatchID, DoseID, Manufacture, ExpDate, Status) values (1,  '" . $dose_id . "', '" . $_POST['dose'] . "', '" 
+			$status = 'valid';
+			if ($is_updated) $status = 'used';
+			mysqli_query($con, "insert into doses (BatchID, DoseID, Manufacture, ExpDate, Status) values (1,  '" . $dose_id . "', '" . $_POST['dose'] . "', '" 
 							. $_POST['ExpDate'] . "', '" . $status . "')");
-			} else {
-				echo "Dose stored but expired";
-				mysqli_query($con, "insert into doses (BatchID, DoseID, Manufacture, ExpDate, Status) values (1,  '" . $dose_id . "', '" . $_POST['dose'] . "', '" 
-							. $_POST['ExpDate'] . "', 'Expired')");
-			}
 			
 		}
 
@@ -74,25 +68,27 @@
 				$dose_used = 0;
 				$dose_valid = 0;
 				$dose_exp = 0;
-				echo "<h3>" . $dose[0]['Manufacture'] . "</h3>";
-				echo "<table id = 'dose_table'>";
-				echo "<tr> <th>Dose ID</th> <th>Expiration Date</th> <th>Status</th> </tr>";
-				for ($j = 0; $j < count($dose); $j++) {
-					echo "<tr> <td>" . $dose[$j]['DoseID'] . "</td> <td>" . $dose[$j]['ExpDate'] . "</td><td>" . $dose[$j]['Status'] . "</td> </tr>";
-					$total_dose++;
-					if ($dose[$j]['Status'] == 'used') {
-						$dose_used++;
-					} else if ($dose[$j]['Status'] == 'valid') {
-						$dose_valid++;
-					} else {
-						$dose_exp++;
+				if (isset($dose[0]['Manufacture'])) {
+					echo "<h3>" . $dose[0]['Manufacture'] . "</h3>";
+					echo "<table id = 'dose_table'>";
+					echo "<tr> <th>Dose ID</th> <th>Expiration Date</th> <th>Status</th> </tr>";
+					for ($j = 0; $j < count($dose); $j++) {
+						echo "<tr> <td>" . $dose[$j]['DoseID'] . "</td> <td>" . $dose[$j]['ExpDate'] . "</td><td>" . $dose[$j]['Status'] . "</td> </tr>";
+						$total_dose++;
+						if ($dose[$j]['Status'] == 'used') {
+							$dose_used++;
+						} else if ($dose[$j]['Status'] == 'valid') {
+							$dose_valid++;
+						} else {
+							$dose_exp++;
+						}
 					}
+					echo "</table>";
+					echo "Total Dose Recevied: " . $total_dose . "<br>";
+					echo "Dose Distributed: " . $dose_used . "<br>";
+					echo "Dose Available: " . $dose_valid . "<br>";
+					echo "Dose Expired: " . $dose_exp . "<br>";
 				}
-				echo "</table>";
-				echo "Total Dose Recevied: " . $total_dose . "<br>";
-				echo "Dose Distributed: " . $dose_used . "<br>";
-				echo "Dose Available: " . $dose_valid . "<br>";
-				echo "Dose Expired: " . $dose_exp . "<br>";
 			}
 		}
 	?>
@@ -104,6 +100,7 @@
 		<label for = "moderna">Moderna</label>
 		<input type = "radio" id = "johnson" name = "dose" value = "johnson">
 		<label for = "johnson">Johnson</label><br>
+		Dose ID: <input type = "text" name = "DoseID"> <br>
 		Expiration Date: <input type = "date" name = "ExpDate"><br>
 		<input type = "submit"	value = "Add"><br>
 	</form>

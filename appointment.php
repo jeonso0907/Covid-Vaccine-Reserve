@@ -29,10 +29,6 @@
 			echo "Sign up failed <br>";
 		}
 
-		// Update any expired dose before assign it to patient
-		date_default_timezone_set("America/New_York");
-		$update_exp = mysqli_query($con, "update doses set status = 'Expired' where ExpDate < '" . date("Y-m-d") . "'");
-
 		// Check the available dose and display the result (waitlist or appointment)
 		$dose = mysqli_query($con, "select BatchID, DoseID, count(DoseID), manufacture, expdate, status from doses where status = 'valid' and ExpDate >= '" . $_POST['edate'] 
 								. "' order by expdate");
