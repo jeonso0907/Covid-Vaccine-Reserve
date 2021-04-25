@@ -6,7 +6,7 @@
 <body>
 
 	<?php
-		$con = new mysqli('localhost','root','mysql','bur');
+		$con = new mysqli('localhost','root','mysql','test');
 		if (!$con) {die('Cannot connect' .mysqli_connect_error());}
 
 		// Generate the patient's id by the count of the current same last names
@@ -30,16 +30,16 @@
 		}
 
 		// Check the available dose and display the result (waitlist or appointment)
-		$dose = mysqli_query($con, "select BatchID, DoseID, count(DoseID), manufacture, expdate, status from doses where status = 'valid' and ExpDate >= '" . $_POST['edate'] 
+		$dose = mysqli_query($con, "select DoseID, count(DoseID), manufacture, expdate, status from doses where status = 'valid' and ExpDate >= '" . $_POST['edate'] 
 								. "' order by expdate");
 		$available_dose = $dose->fetch_array();
 
 		$result = "";
 		if ($available_dose[2] > 0) {
 			echo "Appointment reserved <br>";
-			$result = "insert into appointments (PatientID, AptResult, BatchID, DoseID, Date) values ('" . $patient_id . "', 'reserved', " . $available_dose[0]
-						. ", '" . $available_dose[1] . "', '" . $_POST['edate'] . "')";
-			$update = "update doses set status = 'used' where DoseID = '" . $available_dose[1] . "'";
+			$result = "insert into appointments (PatientID, AptResult, DoseID, Date) values ('" . $patient_id . "', 'reserved', '" 
+						. $available_dose[0] . "', '" . $_POST['edate'] . "')";
+			$update = "update doses set status = 'used' where DoseID = '" . $available_dose[0] . "'";
 			mysqli_query($con, $update);
 		} else {
 			echo "Watilisted <br>";

@@ -3,31 +3,62 @@
 <head>
 	<title>Patient Signup or Signin</title>
 </head>
+<style>
+	div#signin_or_up {
+		position: absolute;
+		text-align: center;
+		top: 20%;
+		left: 25%;
+		width: 300px; height: 240px;
+		border: 1px solid gray;
+	}
+</style>
+<style>
+	div#edit_and_report {
+		position: absolute;
+		text-align: center;
+		top: 20%;
+		left: 25%;
+		margin-left: 310px;
+		width: 300px; height: 240px;
+		border: 1px solid gray;
+	}
+</style>
 <body>
-	<form method = "POST" action = "result.php">
-		<h1>SignIn</h1>
-		Patient ID : <input type = "text" name = "patientid"></br>
-		First Name : <input type = "text" name = "fname"></br>
-		<input type = "submit" value = "Signin"></br>
-	</form>
+		<div style = "text-align: center;">
+			<h1>BUR Covid Vaccine</h1>
+		</div>
 
-	<form method = "GET" action = "patient.php">
-		<h1>SignUp</h1>
-		<input type = "submit" value = "Signup"></br>
-	</form>
+		<div id = "signin_or_up">
+			<form method = "POST" action = "result.php">
+				<h3>SignIn</h3>
+				Patient ID : <input type = "text" name = "patientid"></br>
+				First Name : <input type = "text" name = "fname"></br>
+				<input type = "submit" value = "Signin"></br>
+			</form>
 
-	<h2>Report or Add Dose</h2>
-	<form method = "get" action = "dose.php">
-		<input type = "submit" value = "Dose Edit"></br>
-	</form>
+			<form method = "GET" action = "patient.php">
+				<h3>SignUp</h3>
+				<input type = "submit" value = "Signup"></br>
+			</form>
+		</div>
 
-	<form method = "get" action = "dose_report.php">
-		<input type = "submit" value = "Dose Report"></br>
-	</form>
+		<div id = "edit_and_report">
+			<h3>Edit Dose</h3>
+			<form method = "get" action = "dose.php">
+				<input type = "submit" value = "Dose Edit"></br>
+			</form>
 
-	<form method = "get" action = "report.php">
-		<input type = "submit" value = "Patient Report"></br>
-	</form>
+			<h3>Reports</h3>
+			<form method = "get" action = "dose_report.php">
+				<input type = "submit" value = "Dose Report"></br>
+			</form>
+
+			<form method = "get" action = "report.php">
+				<input type = "submit" value = "Patient Report"></br>
+			</form>
+		</div>
+
 
 </body>
 </html>
